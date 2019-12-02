@@ -25,7 +25,9 @@ from util import nearestPoint
 #########
 class MyAgent(CaptureAgent):
   """
-  YOUR DESCRIPTION HERE
+  Our agent takes the broadcasted plan from the teammate and decides on an action based on that. 
+  We do not want to double our effort, so we find an action that is not in the teammate's actions, and choose that.
+  Else, pick randomly.
   """
 
   def registerInitialState(self, gameState):
@@ -58,10 +60,15 @@ class MyAgent(CaptureAgent):
     # Use it to pick a better action for yourself
 
     actions = gameState.getLegalActions(self.index)
-
-    filteredActions = actionsWithoutReverse(actionsWithoutStop(actions), gameState, self.index)
-
-    currentAction = random.choice(actions) # Change this!
+    currentAction = random.choice(actions) # Change this! Initialize the action at random
+    # loop through all legal actions
+    for action in actions: 
+      if teammateActions is not None:
+        # if the current action is not in the list of our teammates, pick it (we don't want to go where they go)
+        if action not in teammateActions:
+          currentAction = action
+          return currentAction
+    #filteredActions = actionsWithoutReverse(actionsWithoutStop(actions), gameState, self.index)
     return currentAction
 
 def actionsWithoutStop(legalActions):
